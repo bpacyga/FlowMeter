@@ -15,7 +15,6 @@ unsigned long totalMilliLitres;
 
 unsigned long oldTime;
 
-int pulseCount; 
 void setup() {
   lcd.init();
   lcd.backlight();
@@ -84,7 +83,7 @@ void loop()
     pulseCount = 0;
     
     // Enable the interrupt again now that we've finished sending output
-    attachInterrupt(sensorInterrupt, pulseCounter, FALLING);
+    attachInterrupt(digitalPinToInterrupt(flowMeterPin), flowTrigger, FALLING);
   }
 }
 
@@ -102,7 +101,7 @@ void displayLCD()(
    lcd.print(totalMilliLitres);
  )
 
- void TestMath(){
+ void testMath(){
     //Interrupt so we can test the display and changing values using the button
     pulseCount += 1000;
  }
