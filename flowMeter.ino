@@ -1,4 +1,3 @@
-
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -15,9 +14,23 @@ unsigned long totalMilliLitres;
 
 unsigned long oldTime;
 
+// LCD settings
+int displaySetting = 1;
+const int maxDisplays = 5;
+unsigned long lastDisplaySwitch = millis();
+const int displayDelay = 250;
+int flag = 0;
+
 void setup() {
+  Serial.begin(9600);
+  Serial.print("test");
   lcd.init();
   lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Output Liquid Quantity:");
+  lcd.setCursor(0, 1);
+  lcd.print(totalMilliLitres);
   pulseCount        = 0;
   flowRate          = 0.0;
   flowMilliLitres   = 0;
@@ -76,6 +89,7 @@ void loop()
     Serial.print("\t");       // Print tab space
     Serial.print(totalMilliLitres/1000);
     Serial.print("L");
+    delay(1000);
     displayLCD();
     
 
@@ -90,18 +104,21 @@ void loop()
 
 void flowTrigger(){
   //Trigger that is supposed to increment when water flows through sensor
+  Serial.print("Entered flowTrigger");
   pulseCount++;
 }
 
-void displayLCD()(
+void displayLCD(){
+   Serial.print("Entered LCD");
    lcd.clear();
    lcd.setCursor(0, 0);
    lcd.print("Output Liquid Quantity:");
    lcd.setCursor(0, 1);
    lcd.print(totalMilliLitres);
- )
+}
 
  void testMath(){
     //Interrupt so we can test the display and changing values using the button
+    Serial.print("Entered testMath");
     pulseCount += 1000;
  }
