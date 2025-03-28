@@ -1,5 +1,5 @@
-#include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(12, 11, 6, 5, 4,3);
 
 const int buttonPin = 7;
 const int flowMeterPin = 2;
@@ -24,8 +24,7 @@ int flag = 0;
 void setup() {
   Serial.begin(9600);
   Serial.print("test");
-  lcd.init();
-  lcd.backlight();
+  lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Output Liquid Quantity:");
