@@ -1,0 +1,20 @@
+#serial testing
+
+#use
+#  pip install pyserial
+#in cmd if you don't have the library
+
+import serial 
+import time
+
+totalFlow = 0
+
+#connect to the arduino on COM5
+arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
+
+while True: 
+    flowRate = int.from_bytes(arduino.read(1), "big")
+    print(str(flowRate))
+
+    if flowRate != 0:
+        totalFlow+=flowRate
