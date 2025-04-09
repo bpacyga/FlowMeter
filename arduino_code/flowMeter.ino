@@ -23,8 +23,8 @@ const int displayDelay = 250;
 int flag = 0;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.print("test");
+  Serial.begin(115200);
+  Serial.setTimeout(.1);
   lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -80,19 +80,9 @@ void loop()
       
     unsigned int frac;
     
-    // Print the flow rate for this second in litres / minute
-    Serial.print("Flow rate: ");
-    Serial.print(int(flowRate));  // Print the integer part of the variable
-    Serial.print("L/min");
-    Serial.print("\t");       // Print tab space
+    // Send the total MiliLitres to the Serial port for reading in Python
+    Serial.write(int(totalMilliLitres));  // Print the integer part of the variable
 
-    // Print the cumulative total of litres flowed since starting
-    Serial.print("Output Liquid Quantity: ");        
-    Serial.print(totalMilliLitres);
-    Serial.println("mL"); 
-    Serial.print("\t");       // Print tab space
-    Serial.print(totalMilliLitres/1000);
-    Serial.print("L");
     if(flag == 1) 
     {
       flag = 0;
@@ -113,12 +103,11 @@ void loop()
 
 void flowTrigger(){
   //Trigger that is supposed to increment when water flows through sensor
-  Serial.print("Entered flowTrigger");
   pulseCount++;
 }
 
 void displayLCD(){
-   Serial.print("Entered LCD");
+   //Serial.print("Entered LCD");
    lcd.clear();
    lcd.setCursor(0, 0);
    switch(displaySetting)
@@ -145,12 +134,10 @@ void displayLCD(){
 
  void testMath(){
     //Interrupt so we can test the display and changing values using the button
-    Serial.print("Entered testMath");
     pulseCount += 1000;
  }
 
  void changeDisplaySettingFlag() {
-    Serial.print("Entered changeDisplaySettingFlag");
     flag = 1;
 }
 void changeDisplaySetting() {
