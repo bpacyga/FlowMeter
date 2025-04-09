@@ -75,7 +75,7 @@ void loop()
     // Add the millilitres passed in this second to the cumulative total
     totalMilliLitres += flowMilliLitres;
 
-    // Divide totalMilliLitres by time since start to get totalFlowRate (mL/sec)
+    // Divide totalMilliLitres by time since start to get totalFlowRate
     totalFlowRate = totalMilliLitres/(millis()/60);
       
     unsigned int frac;
