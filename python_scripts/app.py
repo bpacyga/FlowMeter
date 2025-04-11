@@ -4,12 +4,23 @@ import threading as thr
 from data_logger import *
 
 #create_widgets(): Populates TKInter GUI
-def create_widgets():
-  ttk.Label(frame, text="Water Flow Sensor").grid(column=1, row=0)
-  ttk.Label(frame, text="Flow Rate: ").grid(column=0, row=1)
-  ttk.Label(frame, text="Total Volume: ").grid(column=1, row=1)
-  ttk.Label(frame, text="Average Flow Rate: ").grid(column=2, row=1)
+def create_widgets(flowrate, total_vol, avg_flowrate):
+  ttk.Label(frame, text = "Water Flow Sensor").grid(column=1, row=0)
+  ttk.Label(frame, textvariable = flowrate).grid(column=0, row=1)
+  ttk.Label(frame, textvariable = total_vol).grid(column=1, row=1)
+  ttk.Label(frame, textvariable = avg_flowrate).grid(column=2, row=1)
+  #new button here for refreshing data
   ttk.Button(frame, text="Quit", command=lambda: shutdown_app(root, t)).grid(column=1, row=2)
+
+  flowrate.set("Flow Rate: N/A")
+  total_vol.set("Total Volume: N/A")
+  avg_flowrate.set("Average Flow Rate: N/A")
+
+#refresh_data(): once lock is aquired, reads global vars to update text
+def refresh_data():
+  #use mutex lock, set the variables
+  
+  #update StringVars()
 
 #shutdown_app(): Handles shutdown of serial and database connection
 def shutdown_app(root, t):
@@ -21,7 +32,11 @@ def shutdown_app(root, t):
 root = Tk()
 frame = ttk.Frame(root, padding=10)
 frame.grid()
-create_widgets()
+
+flowrate = StringVar()
+total_vol = StringVar()
+avg_flowrate = StringVar()
+create_widgets(flowrate, total_vol, avg_flowrate)
 
 #Establish database connection
 
