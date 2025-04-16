@@ -79,9 +79,12 @@ void loop()
     totalFlowRate = totalMilliLitres/(millis()/60);
       
     unsigned int frac;
-    
+  
+
     // Send the total MiliLitres to the Serial port for reading in Python
     Serial.write(int(totalMilliLitres));  // Print the integer part of the variable
+    Serial.write('\n');
+    Serial.write(int(flowRate));
 
     if(flag == 1) 
     {
