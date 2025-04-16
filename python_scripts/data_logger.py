@@ -9,7 +9,8 @@ def read_data():
   
   #read data in bytes
   flowRate = arduino.readline().decode("utf-8")
-  
+  if (flowRate == null):
+    
   #update dict with new values - test code below
   new_data['flowrate'] = flowRate
   new_data['total_vol'] = 5.1
