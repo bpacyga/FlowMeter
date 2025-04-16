@@ -8,9 +8,10 @@ def read_data():
   new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0}
   
   #read data in bytes
+  flowRate = arduino.readline().decode("utf-8")
   
   #update dict with new values - test code below
-  new_data['flowrate'] = 0.52
+  new_data['flowrate'] = flowRate
   new_data['total_vol'] = 5.1
   new_data['avg_flowrate'] = 0.96
   
@@ -32,6 +33,9 @@ def update_database(flowrate, total_vol, avg_flowrate):
 def logger_loop(g_lock):
   #open serial port
   t = thr.currentThread()
+  
+  #connect to the arduino on COM5
+  arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
 
   while(getattr(t, "running", True)):
     new_data = read_data()
@@ -40,3 +44,4 @@ def logger_loop(g_lock):
     time.sleep(1) #change sleep seconds as needed
 
   #close serial port
+  arduino.close()
