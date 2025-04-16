@@ -5,11 +5,12 @@ import global_vars
 
 #read_data(): retrieves data from Ardiuno, updating variables
 def read_data():
-  new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0}
+  new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0, 'null_input': False}
   
   #read data in bytes
   flowRate = arduino.readline().decode("utf-8")
   if (flowRate == null):
+    new_data['null_input'] = True 
     
   #update dict with new values - test code below
   new_data['flowrate'] = flowRate
@@ -40,8 +41,9 @@ def logger_loop(g_lock):
 
   while(getattr(t, "running", True)):
     new_data = read_data()
-    update_globals(g_lock, new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
-    update_database(new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
+    if(new_data['null_input'] == False):
+      update_globals(g_lock, new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
+      update_database(new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
     time.sleep(1) #change sleep seconds as needed
 
   #close serial port
