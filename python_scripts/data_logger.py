@@ -8,14 +8,20 @@ def read_data():
   new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0, 'null_input': False}
   
   #read data in bytes
-  flowRate = arduino.readline().decode("utf-8")
-  if (flowRate == null):
-    new_data['null_input'] = True 
-    
-  #update dict with new values - test code below
-  new_data['flowrate'] = flowRate
-  new_data['total_vol'] = 5.1
-  new_data['avg_flowrate'] = 0.96
+  flowRate = str(arduino.readline().decode("utf-8")).rstrip()
+  if (flowRate == null or ''):
+    new_data['null_input'] = True
+    new_data['flowrate'] = 0
+    new_data['total_vol'] = 0
+    new_data['avg_flowrate'] = 0
+  else:
+    total_vol = str(arduino.readline().decode("utf-8")).rstrip()
+    time = str(arduino.readline().decode("utf-8")).rstrip()
+    total_flow = str(arduino.readline().decode("utf-8")).rstrip()
+    #update dict with new values - test code below
+    new_data['flowrate'] = float(flowRate)
+    new_data['total_vol'] = long(total_vol)
+    new_data['avg_flowrate'] = total_flow/time
   
   return new_data
 
