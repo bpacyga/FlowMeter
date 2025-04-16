@@ -10,24 +10,22 @@ import requests  #Thingspeak
 thingspeakKey = '0E4NVRSW981M90O9'
 
 #read_data(): retrieves data from Ardiuno, updating variables
-def read_data():
+def read_data(arduino):
   new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0, 'null_input': False}
   
   #read data in bytes
   flowRate = str(arduino.readline().decode("utf-8")).rstrip()
-  if (flowRate == null or ''):
+  if (flowRate == None or ''):
     new_data['null_input'] = True
-    new_data['flowrate'] = 0
-    new_data['total_vol'] = 0
-    new_data['avg_flowrate'] = 0
   else:
     total_vol = str(arduino.readline().decode("utf-8")).rstrip()
     time = str(arduino.readline().decode("utf-8")).rstrip()
     total_flow = str(arduino.readline().decode("utf-8")).rstrip()
-    #update dict with new values - test code below
+    #update dict with new values
+    print(flowRate)
     new_data['flowrate'] = float(flowRate)
-    new_data['total_vol'] = long(total_vol)
-    new_data['avg_flowrate'] = total_flow/time
+    new_data['total_vol'] = float(total_vol)
+    new_data['avg_flowrate'] = float(total_flow)/float(time)
   
   return new_data
 
@@ -59,7 +57,7 @@ def logger_loop(g_lock):
   arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
 
   while(getattr(t, "running", True)):
-    new_data = read_data()
+    new_data = read_data(arduino)
     if(new_data['null_input'] == False):
       update_globals(g_lock, new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
       update_database(new_data['flowrate'], new_data['total_vol'], new_data['avg_flowrate'])
