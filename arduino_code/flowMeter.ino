@@ -67,10 +67,10 @@ void loop()
     // interrupts went away.
     oldTime = millis();
     
-    // Divide the flow rate in litres/minute by 60 to determine how many litres have
-    // passed through the sensor in this 1 second interval, then multiply by 1000 to
+    // Divide the flow rate in litres/minute by 300 to determine how many litres have
+    // passed through the sensor in this 5 second interval, then multiply by 1000 to
     // convert to millilitres.
-    flowMilliLitres = (flowRate / 60) * 1000;
+    flowMilliLitres = (flowRate / 300) * 1000;
     
     // Add the millilitres passed in this second to the cumulative total
     totalMilliLitres += flowMilliLitres;
@@ -137,11 +137,6 @@ void displayLCD(){
      lcd.print("Unknown Setting!");
    }
 }
-
- void testMath(){
-    //Interrupt so we can test the display and changing values using the button
-    pulseCount += 1000;
- }
 
  void changeDisplaySettingFlag() {
     flag = 1;

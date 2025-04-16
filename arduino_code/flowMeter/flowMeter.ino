@@ -4,10 +4,10 @@ LiquidCrystal lcd(12, 11, 6, 5, 4,7);
 const int buttonPin = 3;
 const int flowMeterPin = 2;
 
-float calibrationFactor = 4.5;
+float calibrationFactor = .54;
 
 //Global variables 
-volatile byte pulseCount;  
+volatile int pulseCount;  
 float flowRate;
 unsigned int flowMilliLitres;
 unsigned long totalMilliLitres;
@@ -23,8 +23,8 @@ const int displayDelay = 250;
 int flag = 0;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.print("test");
+  Serial.begin(115200);
+  Serial.setTimeout(.1);
   lcd.begin(16, 2);
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -38,9 +38,6 @@ void setup() {
   oldTime           = 0;
   totalFlowRate     = 0;
 
-  pinMode(flowMeterPin, INPUT);
-  digitalWrite(flowMeterPin, HIGH);
-
   pinMode(buttonPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(buttonPin), changeDisplaySettingFlag, FALLING);
   pinMode(flowMeterPin, INPUT);
@@ -51,7 +48,7 @@ void setup() {
 void loop()
 {
    
-   if((millis() - oldTime) > 1000)    // Only process counters once per second
+   if((millis() - oldTime) > 5000)    // Only process counters once per second
   { 
     // Disable the interrupt while calculating flow rate and sending the value to
     // the host
@@ -63,40 +60,36 @@ void loop()
     // based on the number of pulses per second per units of measure (litres/minute in
     // this case) coming from the sensor.
     flowRate = ((1000.0 / (millis() - oldTime)) * pulseCount) / calibrationFactor;
-    
+
     // Note the time this processing pass was executed. Note that because we've
     // disabled interrupts the millis() function won't actually be incrementing right
     // at this point, but it will still return the value it was set to just before
     // interrupts went away.
     oldTime = millis();
     
-    // Divide the flow rate in litres/minute by 60 to determine how many litres have
-    // passed through the sensor in this 1 second interval, then multiply by 1000 to
+    // Divide the flow rate in litres/minute by 300 to determine how many litres have
+    // passed through the sensor in this 5 second interval, then multiply by 1000 to
     // convert to millilitres.
-    flowMilliLitres = (flowRate / 60) * 1000;
+    flowMilliLitres = (flowRate / 300) * 1000;
     
     // Add the millilitres passed in this second to the cumulative total
     totalMilliLitres += flowMilliLitres;
 
     // Divide totalMilliLitres by time since start to get totalFlowRate (mL/sec)
     totalFlowRate = totalMilliLitres/(millis()/1000);
-      
-    unsigned int frac;
     
-    // Print the flow rate for this second in litres / minute
-    Serial.print("Flow rate: ");
-    Serial.print(int(flowRate));  // Print the integer part of the variable
-    Serial.print("L/min");
-    Serial.print("\t");       // Print tab space
+    unsigned int frac;
+  
 
-    // Print the cumulative total of litres flowed since starting
-    Serial.print("Output Liquid Quantity: ");        
-    Serial.print(totalMilliLitres);
-    Serial.println("mL"); 
-    Serial.print("\t");       // Print tab space
-    Serial.print(totalMilliLitres/1000);
-    Serial.print("L");
-    if(flag == 1) 
+    // Send the total MiliLitres to the Serial port for reading in Python
+
+    Serial.println(float(flowRate));
+    Serial.println(long(totalMilliLitres));
+    Serial.println(long(millis()));
+    Serial.println(long(totalFlowRate));
+    //Serial.println(float(flowRate));
+
+    if(flag == 1)
     {
       flag = 0;
       changeDisplaySetting();
@@ -116,12 +109,11 @@ void loop()
 
 void flowTrigger(){
   //Trigger that is supposed to increment when water flows through sensor
-  Serial.print("Entered flowTrigger");
   pulseCount++;
 }
 
 void displayLCD(){
-   Serial.print("Entered LCD");
+   //Serial.print("Entered LCD");
    lcd.clear();
    lcd.setCursor(0, 0);
    switch(displaySetting)
@@ -147,7 +139,6 @@ void displayLCD(){
 }
 
  void changeDisplaySettingFlag() {
-    Serial.print("Entered changeDisplaySettingFlag");
     flag = 1;
 }
 void changeDisplaySetting() {
