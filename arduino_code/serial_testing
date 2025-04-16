@@ -13,5 +13,5 @@ totalFlow = 0
 arduino = serial.Serial(port='COM5', baudrate=115200, timeout=.1)
 
 while True: 
-    totalMililitres = int.from_bytes(arduino.read(1), "big")
-    print(str(totalMililitres))
+    output = int.from_bytes(arduino.read(1), "big")
+    print(str(output))
