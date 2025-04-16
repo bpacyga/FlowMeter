@@ -3,6 +3,12 @@ import threading as thr
 import time
 import global_vars
 
+#pip install pyserial requests if you dont have it  
+import time		 #Thingspeak
+import requests  #Thingspeak
+
+thingspeakKey = '0E4NVRSW981M90O9'
+
 #read_data(): retrieves data from Ardiuno, updating variables
 def read_data():
   new_data = {'flowrate': 0.0, 'total_vol': 0.0, 'avg_flowrate': 0.0, 'null_input': False}
@@ -34,7 +40,14 @@ def update_globals(g_lock, flowrate, total_vol, avg_flowrate):
 
 #update_database(): connects to Thingspeak to update it with new data
 def update_database(flowrate, total_vol, avg_flowrate):
-  #database implementation here - below is test code
+  #flowrate = serial.readline().decode('utf-8').strip()
+  url = 'https://api.thingspeak.com/update.json'
+  params = {
+    'api_key': thingspeakKey,
+	'field1': flowrate
+  }
+  response = requests.post(url, data=params) # System response for debugging 
+  print(response.text)
   print(f"{flowrate} {total_vol} {avg_flowrate}")
 
 #Main Thread loop
